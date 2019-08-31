@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import logo from './logo.svg';
+import { Link } from 'react-router-dom';
 import './App.css';
 import './bootstrap.min.css';
 
@@ -38,7 +38,7 @@ function Turn({ author, books, highlight, onAnswerSelected }) {
         <img src={author.imageUrl} className="authorimage" alt="Author" />
       </div>
       <div className="col-6">
-        {books.map((title) => <Book title={title} key={title} onClick={onAnswerSelected} /> )}
+        {books.map((title) => <Book title={title} key={title} onClick={onAnswerSelected} />)}
       </div>
     </div>);
 }
@@ -55,10 +55,20 @@ Turn.propTypes = {
   highlight: PropTypes.string.isRequired
 }
 
-function Continue() {
+function Continue({show, onContinue}) {
   return (
-    <div></div>);
+    <div className="row continue">
+      {show
+        ? <div className="col-11">
+            <button 
+              className="btn btn-primary btn-lg float-right" 
+              onClick={onContinue}>Continue</button>
+          </div>
+        : null}
+    </div>);
 }
+
+
 
 function Footer() {
   return (
@@ -72,13 +82,14 @@ function Footer() {
     </div>);
 }
 
-function AuthorQuiz({ turnData, highlight, onAnswerSelected }) {
+function AuthorQuiz({ turnData, highlight, onAnswerSelected, onContinue }) {
 
   return (
     <div className="container-fluid">
       <Hero />
       <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected} />
-      <Continue />
+      <Continue show={highlight === 'correct'} onContinue={onContinue}/>
+      <p><Link to="/add">Add an author</Link></p>
       <Footer />
     </div>
   );
