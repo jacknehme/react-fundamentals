@@ -1,5 +1,7 @@
 import React from 'react';
 import "./AddAuthorForm.css";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 class AuthorForm extends React.Component {
@@ -16,21 +18,21 @@ class AuthorForm extends React.Component {
         this.handleAddBook = this.handleAddBook.bind(this);
     }
 
-    onFieldChange(event){
+    onFieldChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         })
     }
 
-    handleAddBook(event){
+    handleAddBook(event) {
         event.preventDefault();
         this.setState({
             books: this.state.books.concat([this.state.bookTemp]),
             bookTemp: ''
         })
     }
-    
-    handleSubmit(event){
+
+    handleSubmit(event) {
         event.preventDefault();
         this.props.onAddAuthor(this.state);
     }
@@ -40,28 +42,28 @@ class AuthorForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <div className="AddAuthorForm_input">
                     <label htmlFor="name">Name</label>
-                    <input 
-                        type="text" 
-                        name="name" 
+                    <input
+                        type="text"
+                        name="name"
                         value={this.state.name}
-                        onChange={this.onFieldChange}/>
+                        onChange={this.onFieldChange} />
                 </div>
                 <div className="AddAuthorForm_input">
                     <label htmlFor="imageUrl">Image URL</label>
-                    <input 
-                        type="text" 
-                        name="imageUrl" 
+                    <input
+                        type="text"
+                        name="imageUrl"
                         value={this.state.imageUrl}
-                        onChange={this.onFieldChange}/>
+                        onChange={this.onFieldChange} />
                 </div>
                 <div className="AddAuthorForm_input">
-                  {this.state.books.map((book) => <p key={book}>{book}</p>)}
-                  <label htmlFor="bookTemp">Books</label>
-                    <input 
-                        type="text" 
-                        name="bookTemp" 
+                    {this.state.books.map((book) => <p key={book}>{book}</p>)}
+                    <label htmlFor="bookTemp">Books</label>
+                    <input
+                        type="text"
+                        name="bookTemp"
                         value={this.state.bookTemp}
-                        onChange={this.onFieldChange}/>
+                        onChange={this.onFieldChange} />
                     <button type="button" value="+" onClick={this.handleAddBook}>+</button>
                 </div>
                 <button type="submit">Add</button>
@@ -73,8 +75,17 @@ class AuthorForm extends React.Component {
 function AddAuthorForm({ match, onAddAuthor }) {
     return <div className="AddAuthorForm">
         <h1>Add Author</h1>
-        <AuthorForm onAddAuthor={onAddAuthor}/>
+        <AuthorForm onAddAuthor={onAddAuthor} />
     </div>;
 }
 
-export default AddAuthorForm;
+function mapDispatchToProps(dispatch, props) {
+    return {
+        onAddAuthor: (author) => {
+            dispatch({ type: 'ADD_AUTHOR', author });
+            props.history.push('/');
+        }
+    };
+}
+
+export default withRouter(connect(() => {return {}}, mapDispatchToProps)(AddAuthorForm));
